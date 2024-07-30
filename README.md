@@ -8,7 +8,7 @@
 ![](./assets/deployment.svg)
 
 ### 容器架构
-![](./assets/k8s.svg)
+![](./assets/k8s.png)
 
 ## 目录说明
 - .cloudapp：云应用根目录
