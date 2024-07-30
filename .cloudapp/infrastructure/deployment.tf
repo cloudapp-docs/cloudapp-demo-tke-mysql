@@ -10,6 +10,7 @@ resource "random_password" "cvm" {
   override_special = "_+-&=!@#$%^*()"
 }
 
+# 这里声明容器集群，查看文档：https://cloud.tencent.com/document/product/1689/90552
 resource "tencentcloud_kubernetes_cluster" "tke-cluster" {
   availability_zone   = var.app_target.subnet.zone
   vpc_id              = var.app_target.vpc.id
@@ -43,9 +44,6 @@ resource "tencentcloud_kubernetes_cluster" "tke-cluster" {
     instance_charge_type_prepaid_renew_flag = var.charge_perpaid_auto_renew == true ? "NOTIFY_AND_AUTO_RENEW" : "NOTIFY_AND_MANUAL_RENEW"
 
     count = 1
-
-    system_disk_type = "CLOUD_BSSD"
-    system_disk_size = 50
   }
 
   labels = {
@@ -53,7 +51,7 @@ resource "tencentcloud_kubernetes_cluster" "tke-cluster" {
   }
 }
 
-# 这里声明 mysql 
+# 这里声明 mysql，查看文档：https://cloud.tencent.com/document/product/1689/90566
 
 resource "tencentcloud_mysql_instance" "mysql" {
   availability_zone = var.app_target.availability_zone
@@ -76,7 +74,7 @@ resource "tencentcloud_mysql_instance" "mysql" {
   auto_renew_flag = var.charge_perpaid_auto_renew == true ? 1 : 0
 }
 
-# 声明一个 Helm 容器编排，指定编排到的容器集群在 eks.tf 中声明了
+# 声明一个 Helm 容器编排，查看文档：https://cloud.tencent.com/document/product/1689/90532
 
 resource "cloudapp_helm_app" "app" {
   cluster_id     = tencentcloud_kubernetes_cluster.tke-cluster.id
