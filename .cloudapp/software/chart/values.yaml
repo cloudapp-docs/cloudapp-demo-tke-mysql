@@ -3,11 +3,47 @@ name: cloudapp-demo-todo-list
 replicaCount: 1
 
 # 这里的 ${packageId} 要替换成实际的 packageId
-image: cloudapp.tencentcloudcr.com/public/cloudapp-demo-todo-list:v202407171102
+image: cloudapp.tencentcloudcr.com/${packageId}/cloudapp-demo-todo-list:v202407171102
 
 service:
-  port: 80
-  targetPort: 8000
+    enabled: true
+    appProtocol: true
+
+    annotations: {}
+    labels: {}
+    externalIPs: []
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+
+    enableHttp: true
+    enableHttps: true
+    ipFamilyPolicy: "SingleStack"
+    ipFamilies:
+      - IPv4
+
+    ports:
+      http: 80
+      https: 443
+
+    targetPorts:
+      http: 8000
+      https: 8000
+
+    type: NodePort
+
+    nodePorts:
+      http: 8000
+      https: ""
+      tcp: 8000
+      udp: {}
+
+    external:
+      enabled: true
+
+    internal:
+      enabled: false
+      annotations: {}
+      loadBalancerSourceRanges: []
 
 resources: 
   limits:
@@ -19,6 +55,7 @@ resources:
 
 # 应用运行时注入
 cloudappTargetSubnetID: ""
+cloudappClusterSecurityGroup: ""
 cloudappImageCredentials:
   registry: ""
   username: ""

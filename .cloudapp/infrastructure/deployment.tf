@@ -74,6 +74,14 @@ resource "tencentcloud_mysql_instance" "mysql" {
   auto_renew_flag = var.charge_perpaid_auto_renew == true ? 1 : 0
 }
 
+# 声明一个 CLB，作为应用访问入口
+resource "tencentcloud_clb_instance" "ingress_nginx_clb" {
+  network_type    = "OPEN"
+  security_groups = [var.app_sg.security_group.id]
+  vpc_id          = var.app_target.vpc.id
+  subnet_id       = [var.app_target.subnet.id]
+}
+
 # 声明一个 Helm 容器编排，查看文档：https://cloud.tencent.com/document/product/1689/90532
 
 resource "cloudapp_helm_app" "app" {
@@ -82,10 +90,10 @@ resource "cloudapp_helm_app" "app" {
   chart_username = var.cloudapp_repo_username
   chart_password = var.cloudapp_repo_password
   chart_values = {
-    name                   = var.app_name
-    cloudappTargetSubnetID = var.app_target.subnet.id
+    name                         = var.app_name
+    cloudappTargetSubnetID       = var.app_target.subnet.id
+    cloudappClusterSecurityGroup = var.app_sg.security_group.id
 
-    cos_key = var.cos_key
     cloudappImageCredentials = {
       registry = var.cloudapp_repo_server
       username = var.cloudapp_repo_username
@@ -98,6 +106,18 @@ resource "cloudapp_helm_app" "app" {
       password = tencentcloud_mysql_instance.mysql.root_password
     }
     cam_role_name = var.cloudapp_cam_role
+
+    service = {
+      type = "LoadBalancer"
+      annotations = {
+        "service.kubernetes.io/tke-existed-lbid" = tencentcloud_clb_instance.ingress_nginx_clb.id
+      }
+    }
   }
+}
+
+output "ingress_nginx_domain" {
+  value       = tencentcloud_clb_instance.ingress_nginx_clb.clb_vips[0]
+  description = "应用地址，这里提供的是 CLB 的动态域名，仅提供临时访问，请通过 cname 解析到你自己的域名"
 }
 
