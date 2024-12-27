@@ -17,6 +17,7 @@
 ## 云资源清单
 * MySQL
 * TKE（自动创建 CLB）
+* CLB，tke 使用已有 clb 模式下
 
 ## 如何开始
 
