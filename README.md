@@ -4,12 +4,6 @@
 ## 简介
 本应用是一个基于容器服务实现的 todo list 应用，tke 的 service 使用安装时候创建的 clb，安装完成之后，将域名解析到 clb 的 vip，即可通过 http(s) 访问应用。
 
-### 部署架构
-
-![](./assets/deployment.svg)
-
-### 容器架构
-![](./assets/k8s.png)
 
 ## 目录说明
 - .cloudapp：云应用根目录
