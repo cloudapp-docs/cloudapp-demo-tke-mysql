@@ -13,8 +13,6 @@
     - provider.tf：全局公共参数（固定不变）
   - software: 容器应用源码，使用 helm chart 编排
   - package.yaml： 云应用配置文件
-- frontend：前端源码，示例用，非强制当前目录
-- server: 后台源码，示例用，非强制当前目录
 
 ## 云资源清单
 * MySQL
